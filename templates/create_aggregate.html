@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Create New Aggregate{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header-row">
+        <div>
+            <h1 class="page-title">Select Activities</h1>
+            <p class="page-subtitle">Choose activities from your Strava history to combine.</p>
+        </div>
+        <a href="{{ url_for('create_aggregate_start', clear=True) }}" class="button-secondary">Clear Selection</a>
+    </div>
+
+    <div class="activity-list">
+        {% for activity in activities %}
+        <label class="activity-item" for="activity-{{ activity.id }}">
+            <div class="activity-checkbox">
+                <!-- The JS will handle the logic. Checked if ID is in our session list. -->
+                <input type="checkbox" name="activity_ids" value="{{ activity.id }}" id="activity-{{ activity.id }}" 
+                       {% if activity.id|string in selected_activities %}checked{% endif %}>
+            </div>
+            <div class="activity-details">
+                <div class="activity-title">{{ activity.name }}</div>
+                <div class="activity-meta">
+                    <span>{{ activity.type }}</span>
+                    <span>&bull;</span>
+                    <span>{{ activity.start_date_local.split('T')[0] }}</span>
+                    <span>&bull;</span>
+                    <span>{{ "%.2f"|format(meters_to_miles(activity.distance)) }} mi</span>
+                </div>
+            </div>
+        </label>
+        {% else %}
+            <p>No activities found on this page.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('create_aggregate_start', page=page-1) }}" class="pagination-link">&laquo; Previous</a>
+        {% endif %}
+        <span class="pagination-current">Page {{ page }}</span>
+        {% if activities|length == 20 %}
+            <a href="{{ url_for('create_aggregate_start', page=page+1) }}" class="pagination-link">Next &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Floating action bar -->
+<div class="floating-bar">
+    <div class="container">
+        <span id="selection-counter">{{ selected_activities|length }} activit{{ 'y' if selected_activities|length == 1 else 'ies' }} selected</span>
+        <a href="{{ url_for('finalize_aggregate') }}" class="button-primary" id="review-button">Review & Create Aggregate</a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="activity_ids"]');
+    const counterElement = document.getElementById('selection-counter');
+    const reviewButton = document.getElementById('review-button');
+
+    function updateButtonState() {
+        const count = parseInt(counterElement.textContent, 10) || 0;
+        if (count > 0) {
+            reviewButton.classList.remove('disabled');
+        } else {
+            reviewButton.classList.add('disabled');
+        }
+    }
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const activityId = this.value;
+            const isSelected = this.checked;
+
+            // Send update to the server
+            fetch("{{ url_for('update_selection') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: activityId, selected: isSelected }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the counter on the page
+                const count = data.count;
+                counterElement.textContent = `${count} activit${count === 1 ? 'y' : 'ies'} selected`;
+                updateButtonState();
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Initial check for button state
+    updateButtonState();
+});
+</script>
+{% endblock %}

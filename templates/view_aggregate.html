@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ aggregate.name }}{% endblock %}
+
+{% block head %}
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header-row">
+        <h1 class="page-title">{{ aggregate.name }}</h1>
+        <div class="header-actions">
+            <a href="{{ url_for('edit_aggregate', aggregate_id=aggregate.id) }}" class="button-secondary">Edit</a>
+        </div>
+    </div>
+
+    <div class="stats-and-map-grid">
+        <!-- Redesigned Stats Panel -->
+        <div class="stats-panel">
+            <div class="stat-hero">
+                <div class="stat-hero-label">Total Distance</div>
+                <div class="stat-hero-value">{{ "%.2f"|format(meters_to_miles(aggregate.total_stats.distance)) }}<span>mi</span></div>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Moving Time</div>
+                    <div class="stat-value">{{ seconds_to_hms(aggregate.total_stats.moving_time) }}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Elevation Gain</div>
+                    <div class="stat-value">{{ "%.0f"|format(meters_to_feet(aggregate.total_stats.total_elevation_gain)) }} <span>ft</span></div>
+                </div>
+            </div>
+
+            <h2 class="stats-breakdown-title">By Type</h2>
+            {% for type, stats in aggregate.type_stats.items() %}
+                <div class="type-breakdown" data-activity-type="{{ type }}">
+                    <h3>{{ type }} <span>({{ stats.count }} activit{{ 'y' if stats.count == 1 else 'ies' }})</span></h3>
+                    <div class="type-stat-item">
+                        <span>Distance</span>
+                        <span>{{ "%.2f"|format(meters_to_miles(stats.distance)) }} mi</span>
+                    </div>
+                     <div class="type-stat-item">
+                        <span>Time</span>
+                        <span>{{ seconds_to_hms(stats.moving_time) }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Map Panel -->
+        <div id='map' class="map-container"></div>
+    </div>
+</div>
+
+<script>
+    mapboxgl.accessToken = '{{ mapbox_token }}';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/dark-v10',
+        center: [-98.5795, 39.8283],
+        zoom: 3
+    });
+
+    const mapData = {{ map_data|tojson }};
+    const bounds = new mapboxgl.LngLatBounds();
+
+    // Map activity types to specific colors
+    const colorMap = {
+        'Run': '#FC5200',      // Strava Orange
+        'Ride': '#3978D3',     // Blue
+        'Swim': '#47CFE2',     // Cyan
+        'Hike': '#2E8B57',     // Green
+        'Walk': '#A9A9A9',     // Gray
+        'default': '#BEBEBE'   // Default color for other types
+    };
+
+    map.on('load', () => {
+        mapData.forEach((item, index) => {
+            const coordinates = item.decoded_line.map(p => [p[1], p[0]]);
+            const activityType = item.type;
+            const color = colorMap[activityType] || colorMap['default'];
+
+            if (coordinates.length > 0) {
+                map.addSource(`route-${index}`, {
+                    'type': 'geojson',
+                    'data': { 'type': 'Feature', 'geometry': { 'type': 'LineString', 'coordinates': coordinates } }
+                });
+                map.addLayer({
+                    'id': `route-${index}`, 'type': 'line', 'source': `route-${index}`,
+                    'layout': { 'line-join': 'round', 'line-cap': 'round' },
+                    'paint': { 'line-color': color, 'line-width': 3, 'line-opacity': 0.85 }
+                });
+                coordinates.forEach(point => bounds.extend(point));
+            }
+        });
+
+        if (!bounds.isEmpty()) {
+            map.fitBounds(bounds, { padding: 50 });
+        }
+    });
+</script>
+{% endblock %}
