@@ -20,7 +20,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
-# Use PostgreSQL in production (on Railway) and SQLite for local development
+# Database configuration
 if os.getenv('DATABASE_URL'):
     db_url = os.getenv('DATABASE_URL').replace("postgres://", "postgresql://", 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
