@@ -10,6 +10,7 @@ from flask import Flask, redirect, url_for, session, request, render_template, a
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from datetime import datetime
+from flask_migrate import Migrate
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,10 +19,18 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
-db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'aggregio.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+
+# Use PostgreSQL in production (on Railway) and SQLite for local development
+if os.getenv('DATABASE_URL'):
+    db_url = os.getenv('DATABASE_URL').replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+else:
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'aggregio.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # --- Credentials & Constants ---
 STRAVA_CLIENT_ID = os.getenv('STRAVA_CLIENT_ID')
@@ -227,13 +236,6 @@ def delete_aggregate(aggregate_id):
 def view_activities():
     if not get_current_user(): return redirect(url_for('index'))
     return "Activity list page coming soon!", 200
-
-# Manual init-db command
-@app.cli.command("init-db")
-def init_db_command():
-    """Creates the database tables."""
-    db.create_all()
-    print("Initialized the database.")
 
 # Main entry point
 if __name__ == '__main__':
