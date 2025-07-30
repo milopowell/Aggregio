@@ -33,7 +33,30 @@
                     <div class="stat-value">{{ "%.0f"|format(meters_to_feet(aggregate.total_stats.total_elevation_gain)) }} <span>ft</span></div>
                 </div>
             </div>
-
+                <div class="stat-item">
+                    <div class="stat-label">Calories Burned</div>
+                    <div class="stat-value">{{ "{:,.0f}".format(aggregate.total_stats.calories) }}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Avg. Speed</div>
+                    <div class="stat-value">
+                        {% if aggregate.total_stats.moving_time > 0 %}
+                            {{ "%.1f"|format(mps_to_mph(aggregate.total_stats.distance / aggregate.total_stats.moving_time)) }} <span>mph</span>
+                        {% else %}
+                            --
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Max Speed</div>
+                    <div class="stat-value">{{ "%.1f"|format(mps_to_mph(aggregate.total_stats.max_speed)) }} <span>mph</span></div>
+                </div>
+                {% if aggregate.total_stats.heartrate_activity_count > 0 %}
+                <div class="stat-item">
+                    <div class="stat-label">Avg. Heart Rate</div>
+                    <div class="stat-value">{{ "%.0f"|format(aggregate.total_stats.average_heartrate_sum / aggregate.total_stats.heartrate_activity_count) }} <span>bpm</span></div>
+                </div>
+                {% endif %}
             <h2 class="stats-breakdown-title">By Type</h2>
             {% for type, stats in aggregate.type_stats.items() %}
                 <div class="type-breakdown" data-activity-type="{{ type }}">
@@ -45,6 +68,10 @@
                      <div class="type-stat-item">
                         <span>Time</span>
                         <span>{{ seconds_to_hms(stats.moving_time) }}</span>
+                    </div>
+                    <div class="type-stat-item">
+                        <span>Calories</span>
+                        <span>{{ "%.0f"|format(stats.calories) }}</span>
                     </div>
                 </div>
             {% endfor %}

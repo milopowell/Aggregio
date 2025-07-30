@@ -34,7 +34,7 @@ body {
     padding-bottom: 80px;
 }
 main { flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; padding: 2rem 0; width: 100%; }
-.container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+.container { width: 100%; margin: 0 auto; padding: 0 1.5rem; } /* Aggregio Logo */
 
 /* ================================================
 Header and Layout
@@ -105,6 +105,27 @@ Single Aggregate View & Stats Panel
 .type-stat-item { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 0.25rem 0; }
 .type-stat-item span:first-child { color: var(--text-secondary); }
 .map-container { height: 600px; width: 100%; border-radius: 1rem; overflow: hidden; }
+
+/* ================================================
+Activity List & Details
+================================================
+*/
+.activity-card-link { text-decoration: none; color: var(--text-primary); display: block; transition: transform 0.2s ease; }
+.activity-card-link:hover { transform: translateY(-3px); }
+.activity-item { gap: 1.5rem; /* Increased gap for better spacing */ }
+.activity-arrow { color: var(--text-secondary); transition: color 0.2s; }
+.activity-item:hover .activity-arrow { color: var(--text-primary); }
+.pagination { display: flex; justify-content: center; gap: 1rem; margin-top: 2rem; }
+
+/* ================================================
+Activity Details Page
+================================================
+*/
+.detail-stats-list { display: flex; flex-direction: column; gap: 1rem; padding-top: 1.5rem; }
+.detail-stat-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); font-size: 1rem; }
+.detail-stat-item:last-child { border-bottom: none; }
+.detail-stat-item span:first-child { color: var(--text-secondary); font-weight: 500; }
+.detail-stat-item span:last-child { font-weight: 600; font-size: 1.1rem; }
 
 /* ================================================
 Other Styling

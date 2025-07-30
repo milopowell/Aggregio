@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ activity.name }}{% endblock %}
+
+{% block head %}
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header-row">
+        <div>
+            <h1 class="page-title">{{ activity.name }}</h1>
+            <p class="page-subtitle">{{ activity.type }} on {{ activity.start_date_local.split('T')[0] }}</p>
+        </div>
+    </div>
+
+    <div class="stats-and-map-grid">
+        <div class="stats-panel">
+            <h2 class="stats-breakdown-title">Activity Details</h2>
+            <div class="detail-stats-list">
+                <div class="detail-stat-item"><span>Distance</span><span>{{ "%.2f"|format(meters_to_miles(activity.distance)) }} mi</span></div>
+                <div class="detail-stat-item"><span>Moving Time</span><span>{{ seconds_to_hms(activity.moving_time) }}</span></div>
+                <div class="detail-stat-item"><span>Elevation Gain</span><span>{{ "%.0f"|format(meters_to_feet(activity.total_elevation_gain)) }} ft</span></div>
+                <div class="detail-stat-item"><span>Avg Speed</span><span>{{ "%.1f"|format(mps_to_mph(activity.average_speed)) }} mph</span></div>
+                <div class="detail-stat-item"><span>Max Speed</span><span>{{ "%.1f"|format(mps_to_mph(activity.max_speed)) }} mph</span></div>
+                {% if activity.calories %}
+                <div class="detail-stat-item"><span>Calories</span><span>{{ "{:,.0f}".format(activity.calories) }}</span></div>
+                {% endif %}
+                {% if activity.has_heartrate %}
+                <div class="detail-stat-item"><span>Avg Heart Rate</span><span>{{ "%.0f"|format(activity.average_heartrate) }} bpm</span></div>
+                <div class="detail-stat-item"><span>Max Heart Rate</span><span>{{ "%.0f"|format(activity.max_heartrate) }} bpm</span></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id='map' class="map-container"></div>
+    </div>
+</div>
+
+<script>
+    mapboxgl.accessToken = '{{ mapbox_token }}';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/dark-v10',
+        center: [-98.5795, 39.8283],
+        zoom: 3
+    });
+
+    const mapData = {{ map_data|tojson }};
+    const bounds = new mapboxgl.LngLatBounds();
+
+    const colorMap = {
+        'default': '#FC5200'
+    };
+
+map.on('load', () => {
+    if (mapData && mapData.length > 0) {
+        const item = mapData[0];
+        const coordinates = item.decoded_line.map(p => [p[1], p[0]]); // [[lng, lat], ...]
+        const color = colorMap[item.type] || colorMap['default'];
+
+        if (coordinates.length > 0) {
+            map.addSource('route', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'geometry': { 'type': 'LineString', 'coordinates': coordinates }
+                }
+            });
+            map.addLayer({
+                'id': 'route',
+                'type': 'line',
+                'source': 'route',
+                'layout': { 'line-join': 'round', 'line-cap': 'round' },
+                'paint': { 'line-color': color, 'line-width': 3, 'line-opacity': 0.85 }
+            });
+
+            // 1. Get Start and End coordinates
+            const startPoint = coordinates[0];
+            const endPoint = coordinates[coordinates.length - 1];
+
+            // 2. Add Start marker
+            map.addSource('start-point', {
+                'type': 'geojson',
+                'data': { 'type': 'Feature', 'geometry': { 'type': 'Point', 'coordinates': startPoint } }
+            });
+            map.addLayer({
+                'id': 'start-layer', 'type': 'symbol', 'source': 'start-point',
+                'layout': {
+                    'icon-image': 'marker-15', // A generic Mapbox icon
+                    'icon-size': 1.5,
+                    'text-field': 'Start',
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-offset': [0, -2.0], // Position text above the icon
+                    'text-size': 14
+                },
+                'paint': {
+                    'text-color': '#ffffff'
+                }
+            });
+            
+            // 3. Add End marker
+            map.addSource('end-point', {
+                'type': 'geojson',
+                'data': { 'type': 'Feature', 'geometry': { 'type': 'Point', 'coordinates': endPoint } }
+            });
+            map.addLayer({
+                'id': 'end-layer', 'type': 'symbol', 'source': 'end-point',
+                'layout': {
+                    'icon-image': 'marker-15', // A generic Mapbox icon (may change later)
+                    'icon-size': 1.5,
+                    'text-field': 'End',
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-offset': [0, -2.0],
+                    'text-size': 14
+                },
+                'paint': {
+                    'text-color': '#ffffff'
+                }
+            });
+
+            // FIT MAP TO BOUNDS 
+            coordinates.forEach(point => bounds.extend(point));
+            map.fitBounds(bounds, { padding: 60 }); // Increased padding
+        }
+    }
+});
+</script>
+{% endblock %}

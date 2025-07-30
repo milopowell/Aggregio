@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}Your Activities{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="page-header-row">
+        <div>
+            <h1 class="page-title">Your Activities</h1>
+            <p class="page-subtitle">A log of your recent adventures.</p>
+        </div>
+    </div>
+
+    {% if activities %}
+        <div class="activity-list">
+            {% for activity in activities %}
+                <a href="{{ url_for('view_single_activity', activity_id=activity.id) }}" class="activity-card-link">
+                    <div class="activity-item">
+                        <div class="activity-icon-placeholder" data-activity-type="{{ activity.type }}">
+                            </div>
+                        <div class="activity-info">
+                            <h2 class="activity-title">{{ activity.name }}</h2>
+                            <div class="activity-meta">
+                                <span>{{ activity.start_date_local.split('T')[0] }}</span>
+                                &middot;
+                                <span>{{ activity.type }}</span>
+                                &middot;
+                                <span>{{ "%.2f"|format(meters_to_miles(activity.distance)) }} mi</span>
+                                &middot;
+                                <span>{{ seconds_to_hms(activity.moving_time) }}</span>
+                            </div>
+                        </div>
+                        <div class="activity-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="{{ url_for('view_activities', page=page-1) }}" class="button-secondary">&larr; Previous</a>
+            {% endif %}
+            {% if has_next_page %}
+                <a href="{{ url_for('view_activities', page=page+1) }}" class="button-secondary">Next &rarr;</a>
+            {% endif %}
+        </div>
+
+    {% else %}
+        <div class="empty-state">
+            <h2>No Activities Found</h2>
+            <p>We couldn't find any activities on your Strava account.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
