@@ -3,7 +3,7 @@
 {% block title %}{{ aggregate.name }}{% endblock %}
 
 {% block header_actions %}
-<a href="{{ url_for('view_activities') }}" class="back-link">&larr; Back to Aggregates</a>
+<a href="{{ url_for('aggregates.view_aggregates') }}" class="back-link">&larr; Back to Aggregates</a>
 {% endblock %}
 
 {% block head %}
@@ -16,7 +16,7 @@
     <div class="page-header-row">
         <h1 class="page-title">{{ aggregate.name }}</h1>
         <div class="header-actions">
-            <a href="{{ url_for('edit_aggregate', aggregate_id=aggregate.id) }}" class="button-secondary">Edit</a>
+            <a href="{{ url_for('aggregates.edit_aggregate', aggregate_id=aggregate.id) }}" class="button-secondary">Edit</a>
         </div>
     </div>
 
@@ -25,40 +25,48 @@
         <div class="stats-panel">
             <div class="stat-hero">
                 <div class="stat-hero-label">Total Distance</div>
-                <div class="stat-hero-value">{{ "%.2f"|format(meters_to_miles(aggregate.total_stats.distance)) }}<span>mi</span></div>
+                <div class="stat-hero-value">{{ "%.2f"|format(meters_to_miles(aggregate.total_stats['distance'])) }}<span>mi</span></div>
             </div>
             <div class="stat-grid">
                 <div class="stat-item">
                     <div class="stat-label">Moving Time</div>
-                    <div class="stat-value">{{ seconds_to_hms(aggregate.total_stats.moving_time) }}</div>
+                    <div class="stat-value">{{ seconds_to_hms(aggregate.total_stats['moving_time']) }}</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Elevation Gain</div>
-                    <div class="stat-value">{{ "%.0f"|format(meters_to_feet(aggregate.total_stats.total_elevation_gain)) }} <span>ft</span></div>
+                    <div class="stat-value">{{ "%.0f"|format(meters_to_feet(aggregate.total_stats['total_elevation_gain'])) }} <span>ft</span></div>
                 </div>
             </div>
                 <div class="stat-item">
                     <div class="stat-label">Calories Burned</div>
-                    <div class="stat-value">{{ "{:,.0f}".format(aggregate.total_stats.calories) }}</div>
+                    <div class="stat-value">{{ "{:,.0f}".format(aggregate.total_stats['calories']) }}</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-label">Avg. Speed</div>
-                    <div class="stat-value">
-                        {% if aggregate.total_stats.moving_time > 0 %}
-                            {{ "%.1f"|format(mps_to_mph(aggregate.total_stats.distance / aggregate.total_stats.moving_time)) }} <span>mph</span>
-                        {% else %}
-                            --
-                        {% endif %}
+                {% if display_mode == 'speed' %}
+                    <div class="stat-item">
+                        <div class="stat-label">Avg. Speed</div>
+                        <div class="stat-value">
+                            {% if aggregate.total_stats['moving_time'] > 0 %}
+                                {{ "%.1f"|format(mps_to_mph(aggregate.total_stats['distance'] / aggregate.total_stats['moving_time'])) }} <span>mph</span>
+                            {% else %}
+                                --
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="stat-item">
+                        <div class="stat-label">Avg. Pace</div>
+                        <div class="stat-value">
+                            {{ get_pace(aggregate.total_stats['moving_time'], aggregate.total_stats['distance']) }} <span>/mi</span>
+                        </div>
+                    </div>
+                {% endif %}
                     </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-label">Max Speed</div>
-                    <div class="stat-value">{{ "%.1f"|format(mps_to_mph(aggregate.total_stats.max_speed)) }} <span>mph</span></div>
-                </div>
-                {% if aggregate.total_stats.heartrate_activity_count > 0 %}
+
+                {% if aggregate.total_stats['heartrate_activity_count'] > 0 %}
                 <div class="stat-item">
                     <div class="stat-label">Avg. Heart Rate</div>
-                    <div class="stat-value">{{ "%.0f"|format(aggregate.total_stats.average_heartrate_sum / aggregate.total_stats.heartrate_activity_count) }} <span>bpm</span></div>
+                    <div class="stat-value">{{ "%.0f"|format(aggregate.total_stats['average_heartrate_sum'] / aggregate.total_stats['heartrate_activity_count']) }} <span>bpm</span></div>
                 </div>
                 {% endif %}
             <h2 class="stats-breakdown-title">By Type</h2>
@@ -69,13 +77,33 @@
                         <span>Distance</span>
                         <span>{{ "%.2f"|format(meters_to_miles(stats.distance)) }} mi</span>
                     </div>
+                    <div class="type-stat-item">
+                        {# Check if the activity type is 'Ride' #}
+                        {% if type == 'Ride' %}
+                            <span>Avg Speed</span>
+                            <span>
+                                {# Calculate and display speed in MPH for rides #}
+                                {% if stats['moving_time'] > 0 %}
+                                    {{ "%.1f"|format(mps_to_mph(stats['distance'] / stats['moving_time'])) }} mph
+                                {% else %}
+                                    0.0 mph
+                                {% endif %}
+                            </span>
+                        {% else %}
+                            <span>Avg Pace</span>
+                            <span>
+                                {# Use the get_pace helper for all other activities #}
+                                {{ get_pace(stats['moving_time'], stats['distance']) }} /mi
+                            </span>
+                        {% endif %}
+                    </div>
                      <div class="type-stat-item">
                         <span>Time</span>
                         <span>{{ seconds_to_hms(stats.moving_time) }}</span>
                     </div>
                     <div class="type-stat-item">
                         <span>Calories</span>
-                        <span>{{ "%.0f"|format(stats.calories) }}</span>
+                        <span>{{ "%.0f"|format(stats['calories']) }}</span>
                     </div>
                 </div>
             {% endfor %}
@@ -99,6 +127,7 @@
     const bounds = new mapboxgl.LngLatBounds();
 
     // Map activity types to specific colors
+    // ** Note to change to css styling later **
     const colorMap = {
         'Run': '#FC5200',      // Strava Orange
         'Ride': '#3978D3',     // Blue

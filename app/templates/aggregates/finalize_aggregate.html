@@ -7,13 +7,13 @@
     <h1 class="page-title">Name Your Aggregate</h1>
     <p class="page-subtitle">You've selected {{ count }} activit{{ 'y' if count == 1 else 'ies' }}. Give your new aggregate a memorable name.</p>
 
-    <form action="{{ url_for('finalize_aggregate') }}" method="POST" class="finalize-form">
+    <form action="{{ url_for('aggregates.finalize_aggregate') }}" method="POST" class="finalize-form">
         <div class="form-group">
             <label for="aggregate_name">Aggregate Name</label>
             <input type="text" id="aggregate_name" name="aggregate_name" placeholder="e.g., Marathon Training Week" required autofocus>
         </div>
         <div class="form-actions">
-            <a href="{{ url_for('create_aggregate_start') }}" class="button-secondary">Back to Selection</a>
+            <a href="{{ url_for('aggregates.create_aggregate_start') }}" class="button-secondary">Back to Selection</a>
             <button type="submit" class="button-primary">Save Aggregate</button>
         </div>
     </form>

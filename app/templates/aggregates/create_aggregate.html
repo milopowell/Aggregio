@@ -9,7 +9,7 @@
             <h1 class="page-title">Select Activities</h1>
             <p class="page-subtitle">Choose activities from your Strava history to combine.</p>
         </div>
-        <a href="{{ url_for('create_aggregate_start', clear=True) }}" class="button-secondary">Clear Selection</a>
+        <a href="{{ url_for('aggregates.create_aggregate_start', clear=True) }}" class="button-secondary">Clear Selection</a>
     </div>
 
     <div class="activity-list">
@@ -39,11 +39,11 @@
     <!-- Pagination -->
     <div class="pagination">
         {% if page > 1 %}
-            <a href="{{ url_for('create_aggregate_start', page=page-1) }}" class="pagination-link">&laquo; Previous</a>
+            <a href="{{ url_for('aggregates.create_aggregate_start', page=page-1) }}" class="pagination-link">&laquo; Previous</a>
         {% endif %}
         <span class="pagination-current">Page {{ page }}</span>
         {% if activities|length == 20 %}
-            <a href="{{ url_for('create_aggregate_start', page=page+1) }}" class="pagination-link">Next &raquo;</a>
+            <a href="{{ url_for('aggregates.create_aggregate_start', page=page+1) }}" class="pagination-link">Next &raquo;</a>
         {% endif %}
     </div>
 </div>
@@ -52,7 +52,7 @@
 <div class="floating-bar">
     <div class="container">
         <span id="selection-counter">{{ selected_activities|length }} activit{{ 'y' if selected_activities|length == 1 else 'ies' }} selected</span>
-        <a href="{{ url_for('finalize_aggregate') }}" class="button-primary" id="review-button">Review & Create Aggregate</a>
+        <a href="{{ url_for('aggregates.finalize_aggregate') }}" class="button-primary" id="review-button">Review & Create Aggregate</a>
     </div>
 </div>
 
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const isSelected = this.checked;
 
             // Send update to the server
-            fetch("{{ url_for('update_selection') }}", {
+            fetch("{{ url_for('aggregates.update_selection') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

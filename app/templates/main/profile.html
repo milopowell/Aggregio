@@ -15,12 +15,12 @@
     <h1>Welcome, {{ athlete.firstname }}!</h1>
     
     <div class="profile-nav">
-        <a href="{{ url_for('view_aggregates') }}" class="nav-button">View Aggregates</a>
-        <a href="{{ url_for('view_activities') }}" class="nav-button">View Activities</a>
+        <a href="{{ url_for('aggregates.view_aggregates') }}" class="nav-button">View Aggregates</a>
+        <a href="{{ url_for('activities.view_activities') }}" class="nav-button">View Activities</a>
         <!-- FIX: Changed url_for to point to the correct endpoint -->
-        <a href="{{ url_for('create_aggregate_start', clear=True) }}" class="nav-button highlight">New Aggregate</a>
+        <a href="{{ url_for('aggregates.create_aggregate_start', clear=True) }}" class="nav-button highlight">New Aggregate</a>
     </div>
 
-    <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+    <a href="{{ url_for('main.logout') }}" class="logout-link">Logout</a>
 </div>
 {% endblock %}

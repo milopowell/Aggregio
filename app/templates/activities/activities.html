@@ -14,7 +14,7 @@
     {% if activities %}
         <div class="activity-list">
             {% for activity in activities %}
-                <a href="{{ url_for('view_single_activity', activity_id=activity.id) }}" class="activity-card-link">
+                <a href="{{ url_for('activities.view_single_activity', activity_id=activity.id) }}" class="activity-card-link">
                     <div class="activity-item">
                         <div class="activity-icon-placeholder" data-activity-type="{{ activity.type }}">
                             </div>
@@ -40,10 +40,10 @@
 
         <div class="pagination">
             {% if page > 1 %}
-                <a href="{{ url_for('view_activities', page=page-1) }}" class="button-secondary">&larr; Previous</a>
+                <a href="{{ url_for('activities.view_activities', page=page-1) }}" class="button-secondary">&larr; Previous</a>
             {% endif %}
             {% if has_next_page %}
-                <a href="{{ url_for('view_activities', page=page+1) }}" class="button-secondary">Next &rarr;</a>
+                <a href="{{ url_for('activities.view_activities', page=page+1) }}" class="button-secondary">Next &rarr;</a>
             {% endif %}
         </div>
 
