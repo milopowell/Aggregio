@@ -246,7 +246,7 @@ def delete_aggregate(aggregate_id):
     db.session.commit()
     return redirect(url_for('view_aggregates'))
 
-# Activities View (TBD)***
+# Activities View 
 @app.route('/activities')
 def view_activities():
     user = get_current_user()

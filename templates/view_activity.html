@@ -2,12 +2,17 @@
 
 {% block title %}{{ activity.name }}{% endblock %}
 
+{% block header_actions %}
+<a href="{{ url_for('view_activities') }}" class="back-link">&larr; Back to Activities</a>
+{% endblock %}
+
 {% block head %}
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
 {% endblock %}
 
 {% block content %}
+</header>
 <div class="content-container">
     <div class="page-header-row">
         <div>

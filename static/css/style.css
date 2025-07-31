@@ -63,6 +63,8 @@ Buttons & Links
 .logout-link:hover { color: var(--text-primary); }
 .cta-button { display: inline-flex; align-items: center; justify-content: center; background-color: var(--logo-orange); color: white; font-weight: 700; font-size: 1.125rem; padding: 1rem 2rem; border-radius: 9999px; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); }
 .strava-icon { width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; }
+.back-link { color: #ffffff; text-decoration: none; font-size: 1.5rem; font-weight: bold; }
+.back-link:hover { text-decoration: underline; }
 
 /* ================================================
 Aggregates List Page
