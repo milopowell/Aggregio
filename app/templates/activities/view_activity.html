@@ -25,17 +25,30 @@
         <div class="stats-panel">
             <h2 class="stats-breakdown-title">Activity Details</h2>
             <div class="detail-stats-list">
-                <div class="detail-stat-item"><span>Distance</span><span>{{ "%.2f"|format(meters_to_miles(activity.distance)) }} mi</span></div>
-                <div class="detail-stat-item"><span>Moving Time</span><span>{{ seconds_to_hms(activity.moving_time) }}</span></div>
-                <div class="detail-stat-item"><span>Elevation Gain</span><span>{{ "%.0f"|format(meters_to_feet(activity.total_elevation_gain)) }} ft</span></div>
-                <div class="detail-stat-item"><span>Avg Speed</span><span>{{ "%.1f"|format(mps_to_mph(activity.average_speed)) }} mph</span></div>
-                <div class="detail-stat-item"><span>Max Speed</span><span>{{ "%.1f"|format(mps_to_mph(activity.max_speed)) }} mph</span></div>
+                <div class="detail-stat-item"><span>Distance</span><span>{{ "%.2f"|format(meters_to_miles(activity['distance'])) }} mi</span></div>
+                <div class="detail-stat-item"><span>Moving Time</span><span>{{ seconds_to_hms(activity['moving_time']) }}</span></div>
+                <div class="detail-stat-item"><span>Elevation Gain</span><span>{{ "%.0f"|format(meters_to_feet(activity['total_elevation_gain'])) }} ft</span></div>
+                <div class="detail-stat-item">
+                    <span>{% if type == 'Ride' %}Avg Speed{% else %}Avg Pace{% endif %}</span>
+                    <span>
+                        {% if type == 'Ride' %}
+                            {% if stats['moving_time'] > 0 %}
+                                {{ "%.1f"|format(mps_to_mph(activity['average_speed'])) }} mph
+                            {% else %}
+                                --
+                            {% endif %}
+                        {% else %}
+                            {{ get_pace(activity['moving_time'], activity['distance']) }} /mi
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="detail-stat-item"><span>Max Speed</span><span>{{ "%.1f"|format(mps_to_mph(activity['max_speed'])) }} mph</span></div>
                 {% if activity.calories %}
-                <div class="detail-stat-item"><span>Calories</span><span>{{ "{:,.0f}".format(activity.calories) }}</span></div>
+                <div class="detail-stat-item"><span>Calories</span><span>{{ "{:,.0f}".format(activity['calories']) }}</span></div>
                 {% endif %}
                 {% if activity.has_heartrate %}
-                <div class="detail-stat-item"><span>Avg Heart Rate</span><span>{{ "%.0f"|format(activity.average_heartrate) }} bpm</span></div>
-                <div class="detail-stat-item"><span>Max Heart Rate</span><span>{{ "%.0f"|format(activity.max_heartrate) }} bpm</span></div>
+                <div class="detail-stat-item"><span>Avg Heart Rate</span><span>{{ "%.0f"|format(activity['average_heartrate']) }} bpm</span></div>
+                <div class="detail-stat-item"><span>Max Heart Rate</span><span>{{ "%.0f"|format(activity['max_heartrate']) }} bpm</span></div>
                 {% endif %}
             </div>
         </div>
