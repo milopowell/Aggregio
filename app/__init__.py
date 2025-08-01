@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
@@ -31,9 +31,15 @@ def create_app(config_class=Config):
     from .aggregates.routes import aggregates_bp
     from .activities.routes import activities_bp
 
-    # Register blueprints or routes here
+    # Register blueprints
     app.register_blueprint(main_bp)
     app.register_blueprint(aggregates_bp, url_prefix='/aggregates')
     app.register_blueprint(activities_bp, url_prefix='/activities')
+
+    # Error handlers
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return render_template('404.html'), 404
+    
 
     return app

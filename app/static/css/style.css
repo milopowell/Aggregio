@@ -106,7 +106,7 @@ Single Aggregate View & Stats Panel
 .type-breakdown h3 span { color: var(--text-secondary); font-weight: 400; }
 .type-stat-item { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 0.25rem 0; }
 .type-stat-item span:first-child { color: var(--text-secondary); }
-.map-container { height: 600px; width: 100%; border-radius: 1rem; overflow: hidden; }
+.map-container { height: 600px; width: 100%; border-radius: 1rem; overflow: hidden;}
 
 /* ================================================
 Activity List & Details
