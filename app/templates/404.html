@@ -8,7 +8,8 @@
     <h1 class="hero-title">404 - Page Not Found</h1>
         <p class="hero-subtitle">
             Sorry, the page you are looking for does not exist.</p>
-    <a href="{{ url_for('main.index') }}" class="cta-button">
-            <img src="{{ url_for('static', filename='images/strava-2.svg') }}" alt="Strava Logo" class="strava-icon">
-            Back to Home</a>
+    <a href="{{ url_for('main.index') }}" class="error-button">
+            <span>Back to Home</span>
+            <img src="{{ url_for('static', filename='images/aggregio-logo2.svg') }}" alt="Strava Logo" class="aggregio-logo">
+        </a>
 {% endblock %}
