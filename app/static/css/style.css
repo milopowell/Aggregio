@@ -46,10 +46,10 @@ Header and Layout
 .logo { display: flex; align-items: center; }
 .aggregio-logo { height: 40px; width: auto; }
 .content-container { width: 100%; max-width: 900px; padding-left: 0.75rem;}
-.page-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; }
+.page-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; padding-right: 1.0rem;}
 .page-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
 .page-subtitle { font-size: 1.1rem; color: var(--text-secondary); }
-.header-actions { padding-right: 1.0rem; }
+
 
 /* ================================================
 Buttons & Links
