@@ -52,7 +52,7 @@
                         {% elif display_mode == 'yards' %}
     
                             {% if aggregate.total_stats['moving_time'] > 0 %}
-                                {{ get_pace_per_100y(aggregate.total_stats['moving_time'], aggregate.total_stats['distance']) }} <span>yd/min</span>
+                                {{ get_pace_per_100y(aggregate.total_stats['moving_time'], aggregate.total_stats['distance']) }} <span> /100yd</span>
                             {% else %}
                                 --
                             {% endif %}
@@ -91,7 +91,7 @@
                             {% elif display_mode == 'yards' %}
                                 
                                 {% if stats['moving_time'] > 0 %}
-                                    {{ get_pace_per_100y(stats['moving_time'], stats['distance']) }} min/100yd
+                                    {{ get_pace_per_100y(stats['moving_time'], stats['distance']) }} /100yd
                                 {% else %}
                                     --
                                 {% endif %}

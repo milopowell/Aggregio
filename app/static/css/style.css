@@ -170,7 +170,6 @@ Other Styling
 .nav-button { display: block; padding: 1rem; background-color: var(--border-color); color: var(--text-primary); text-decoration: none; font-size: 1.1rem; font-weight: 600; border-radius: 0.5rem; transition: background-color 0.2s ease; }
 .nav-button:hover { background-color: #475569; }
 .nav-button.highlight { background-color: var(--button-highlight-bg); }
-.pagination { text-align: center; }
 .pagination-link { color: var(--text-secondary); text-decoration: none; padding: 0.5rem 1rem; margin: 0 0.5rem; }
 .empty-state { text-align: center; padding: 4rem 2rem; background-color: var(--card-bg); border-radius: 1rem; border: 2px dashed var(--border-color); }
 .form-group { flex-grow: 1; }

@@ -39,11 +39,10 @@
     <!-- Pagination -->
     <div class="pagination">
         {% if page > 1 %}
-            <a href="{{ url_for('aggregates.create_aggregate_start', page=page-1) }}" class="pagination-link">&laquo; Previous</a>
+            <a href="{{ url_for('aggregates.create_aggregate_start', page=page-1) }}" class="button-secondary">&larr; Previous</a>
         {% endif %}
-        <span class="pagination-current">Page {{ page }}</span>
         {% if activities|length == 20 %}
-            <a href="{{ url_for('aggregates.create_aggregate_start', page=page+1) }}" class="pagination-link">Next &raquo;</a>
+            <a href="{{ url_for('aggregates.create_aggregate_start', page=page+1) }}" class="button-secondary">Next &rarr;</a>
         {% endif %}
     </div>
 </div>
