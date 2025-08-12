@@ -45,8 +45,10 @@ Header and Layout
 .logo-link { text-decoration: none; }
 .logo { display: flex; align-items: center; }
 .aggregio-logo { height: 40px; width: auto; }
-.content-container { width: 100%; max-width: 900px; padding-left: 0.75rem;}
-.page-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; padding-right: 1.0rem;}
+.content-container { width: 100%; max-width: 900px; padding-left: 0.75rem; padding-right: 0.75rem;}
+@media (max-width 768px)
+    { .content-container { padding-left: 0.5rem; padding-right: 0.5rem; } }
+.page-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem;}
 .page-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
 .page-subtitle { font-size: 1.1rem; color: var(--text-secondary); }
 
@@ -88,10 +90,10 @@ Single Aggregate View & Stats Panel
 ================================================
 */
 /*Default grid layout for mobile */
-.stats-and-map-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding-right: 1.0rem;}
+.stats-and-map-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding-right: 0.50rem;}
 /* Adjust grid layout for larger screens */
 @media (min-width: 768px) { 
-    .stats-and-map-grid {grid-template-columns: 350px 1fr; gap: 2rem; alight-items: flex-start; padding-right: 1.0rem;}} 
+    .stats-and-map-grid {grid-template-columns: 350px 1fr; gap: 2rem; alight-items: flex-start; }} 
 .stats-panel { background-color: var(--card-bg); border-radius: 1rem; padding: 1.5rem; }
 .stat-hero { text-align: center; padding: 1rem 0 1.5rem; border-bottom: 1px solid var(--border-color); }
 .stat-hero-label { font-size: 1rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
