@@ -92,7 +92,7 @@ Single Aggregate View & Stats Panel
 ================================================
 */
 /*Default grid layout for mobile */
-.stats-and-map-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding-right: 0.50rem;}
+.stats-and-map-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding-right: 0.5rem; padding-left: 0.5rem; }
 /* Adjust grid layout for larger screens */
 @media (min-width: 768px) { 
     .stats-and-map-grid {grid-template-columns: 350px 1fr; gap: 2rem; alight-items: flex-start; }} 
