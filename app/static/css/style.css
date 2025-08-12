@@ -71,7 +71,7 @@ Buttons & Links
 .strava-icon { width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; }
 .back-link { color: #ffffff; text-decoration: none; font-size: 1.5rem; font-weight: bold; }
 @media (max-width: 768px) {
-    .back-link { font-size: 1.1rem; font-weight: bold; }
+    .back-link { font-size: 1.1rem; font-weight: bold; text-decoration: none; }
 }
 .back-link:hover { text-decoration: underline; }
 
