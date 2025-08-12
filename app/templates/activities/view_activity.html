@@ -29,14 +29,12 @@
                 <div class="detail-stat-item"><span>Moving Time</span><span>{{ seconds_to_hms(activity['moving_time']) }}</span></div>
                 <div class="detail-stat-item"><span>Elevation Gain</span><span>{{ "%.0f"|format(meters_to_feet(activity['total_elevation_gain'])) }} ft</span></div>
                 <div class="detail-stat-item">
-                    <span>{% if type == 'Ride' %}Avg Speed{% else %}Avg Pace{% endif %}</span>
+                    <span>{% if activity.type == 'Ride' %}Avg Speed{% else %}Avg Pace{% endif %}</span>
                     <span>
-                        {% if type == 'Ride' %}
-                            {% if stats['moving_time'] > 0 %}
+                        {% if activity.type == 'Ride' %}
                                 {{ "%.1f"|format(mps_to_mph(activity['average_speed'])) }} mph
-                            {% else %}
-                                --
-                            {% endif %}
+                        {% elif activity.type == 'Swim' %}
+                                {{ get_pace_per_100y(activity['moving_time'], activity['distance']) }} min/100y
                         {% else %}
                             {{ get_pace(activity['moving_time'], activity['distance']) }} /mi
                         {% endif %}
@@ -141,7 +139,7 @@ map.on('load', () => {
 
             // FIT MAP TO BOUNDS 
             coordinates.forEach(point => bounds.extend(point));
-            map.fitBounds(bounds, { padding: 60 }); // Increased padding
+            map.fitBounds(bounds, { padding: 60 }); 
         }
     }
 });

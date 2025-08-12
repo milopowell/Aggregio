@@ -49,6 +49,7 @@ Header and Layout
 .page-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; }
 .page-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
 .page-subtitle { font-size: 1.1rem; color: var(--text-secondary); }
+.header-actions { padding-right: 1.0rem; }
 
 /* ================================================
 Buttons & Links
@@ -87,16 +88,16 @@ Single Aggregate View & Stats Panel
 ================================================
 */
 /*Default grid layout for mobile */
-.stats-and-map-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+.stats-and-map-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding-right: 1.0rem;}
 /* Adjust grid layout for larger screens */
 @media (min-width: 768px) { 
-    .stats-and-map-grid {grid-template-columns: 350px 1fr; gap: 2rem; alight-items: flex-start; }} 
+    .stats-and-map-grid {grid-template-columns: 350px 1fr; gap: 2rem; alight-items: flex-start; padding-right: 1.0rem;}} 
 .stats-panel { background-color: var(--card-bg); border-radius: 1rem; padding: 1.5rem; }
 .stat-hero { text-align: center; padding: 1rem 0 1.5rem; border-bottom: 1px solid var(--border-color); }
 .stat-hero-label { font-size: 1rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
 .stat-hero-value { font-size: 3.5rem; font-weight: 800; line-height: 1; color: var(--text-primary); }
 .stat-hero-value span { font-size: 1.5rem; font-weight: 600; color: var(--text-secondary); margin-left: 0.25rem; }
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem 0; }
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem; }
 .stat-item .stat-label { color: var(--text-secondary); margin-bottom: 0.25rem; }
 .stat-item .stat-value { font-size: 1.25rem; font-weight: 600; }
 .stat-item .stat-value span { font-size: 1rem; color: var(--text-secondary); }

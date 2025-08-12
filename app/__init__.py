@@ -20,6 +20,7 @@ def create_app(config_class=Config):
     def inject_utility_functions():
         return dict(
             get_pace=helpers.get_pace,
+            get_pace_per_100y=helpers.get_pace_per_100y,
             mps_to_mph=helpers.mps_to_mph,
             seconds_to_hms=helpers.seconds_to_hms,
             meters_to_miles=helpers.meters_to_miles,

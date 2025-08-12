@@ -111,8 +111,11 @@ def view_single_aggregate(aggregate_id):
     display_mode = 'pace'
     activity_types = list(aggregate.type_stats.keys())
     # If statement if there is only one activity type AND it's 'ride' show speed
+    # *** Put into 'helper.py later ***
     if len(activity_types) == 1 and activity_types[0] == 'Ride':
         display_mode = 'speed'
+    elif len(activity_types) == 1 and activity_types[0] == 'Swim': 
+        display_mode = 'yards'
     return render_template('aggregates/view_aggregate.html',
         aggregate=aggregate, 
         map_data=map_data,
@@ -120,7 +123,9 @@ def view_single_aggregate(aggregate_id):
         meters_to_miles=meters_to_miles, 
         meters_to_feet=meters_to_feet, 
         seconds_to_hms=seconds_to_hms,
-        mps_to_mph=mps_to_mph
+        mps_to_mph=mps_to_mph,
+        display_mode=display_mode
+    
     )
 
 @aggregates_bp.route('/<string:aggregate_id>/edit', methods=['GET', 'POST'])

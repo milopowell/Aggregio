@@ -56,4 +56,19 @@ def get_pace(moving_time_seconds, distance_meters):
     seconds = int(seconds_per_mile % 60)
 
     return f"{minutes:01d}:{seconds:02d}"
+def get_pace_per_100y(moving_time_seconds, distance_meters):
+    """Calculates pace in minutes and seconds per 100 yards"""
+    if distance_meters == 0 or moving_time_seconds == 0:
+        return "N/A"
+    #convert meters to yards
+    yards = distance_meters * 1.09361
+    if yards == 0:
+        return "N/A"
+    
+    seconds_per_100y = moving_time_seconds / (yards / 100)
+
+    minutes = int(seconds_per_100y // 60)
+    seconds = int(seconds_per_100y % 60)
+
+    return f"{minutes:01d}:{seconds:02d}"
 

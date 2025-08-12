@@ -44,11 +44,21 @@
                     <div class="stat-label">{% if display_mode == 'speed' %}Avg. Speed{% else %}Avg. Pace{% endif %}</div>
                     <div class="stat-value">
                         {% if display_mode == 'speed' %}
+                        
                             {% if aggregate.total_stats['moving_time'] > 0 %}
                                 {{ "%.1f"|format(mps_to_mph(aggregate.total_stats['distance'] / aggregate.total_stats['moving_time'])) }} <span>mph</span>
                             {% else %}
                                 --
                             {% endif %}
+
+                        {% elif display_mode == 'yards' %}
+    
+                            {% if aggregate.total_stats['moving_time'] > 0 %}
+                                {{ get_pace_per_100y(aggregate.total_stats['moving_time'], aggregate.total_stats['distance']) }} <span>yd/min</span>
+                            {% else %}
+                                --
+                            {% endif %}
+
                         {% else %}
                             {{ get_pace(aggregate.total_stats['moving_time'], aggregate.total_stats['distance']) }} <span>/mi</span>
                         {% endif %}
@@ -71,14 +81,23 @@
                         <span>{{ "%.2f"|format(meters_to_miles(stats.distance)) }} mi</span>
                     </div>
                     <div class="type-stat-item">
-                        <span>{% if type == 'Ride' %}Avg Speed{% else %}Avg Pace{% endif %}</span>
+                        <span>{% if display_mode == 'speed' %}Avg Speed{% else %}Avg Pace{% endif %}</span>
                         <span>
-                            {% if type == 'Ride' %}
+                            {% if display_mode == 'speed' %}
+                                
                                 {% if stats['moving_time'] > 0 %}
                                     {{ "%.1f"|format(mps_to_mph(stats['distance'] / stats['moving_time'])) }} mph
                                 {% else %}
                                     --
                                 {% endif %}
+                            {% elif display_mode == 'yards' %}
+                                
+                                {% if stats['moving_time'] > 0 %}
+                                    {{ get_pace_per_100y(stats['moving_time'], stats['distance']) }} min/100yd
+                                {% else %}
+                                    --
+                                {% endif %}
+        
                             {% else %}
                                 {{ get_pace(stats['moving_time'], stats['distance']) }} /mi
                             {% endif %}
