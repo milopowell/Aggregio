@@ -36,7 +36,7 @@ body {
 main { flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; padding: 2rem 0; width: 100%; }
 .container { width: 100%; margin: 0 auto; padding: 0 1.5rem; } /* Aggregio Logo */
 @media (min-width: 768px)
-    { .container { padding; 0 0.5rem; } }
+    { .container { padding: 0 0.5rem; } }
 
 /* ================================================
 Header and Layout
