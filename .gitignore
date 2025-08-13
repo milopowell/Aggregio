@@ -10,4 +10,5 @@ __pycache__/
 
 # Local database file
 aggregio.db
-
+.DS_Store
+install.sh

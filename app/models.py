@@ -9,6 +9,9 @@ class User(db.Model):
     username = db.Column(db.String(100))
     access_token = db.Column(db.String(200), nullable=False)
     aggregates = db.relationship('Aggregate', backref='user', lazy=True, cascade="all, delete-orphan")
+    refresh_token = db.Column(db.String(200), nullable=False)
+    expires_at = db.Column(db.Integer, nullable=False) 
+    aggregates = db.relationship('Aggregate', backref='user', lazy=True, cascade="all, delete-orphan")
 
 class Aggregate(db.Model):
     """Aggregate model for storing Strava activity aggregates."""
