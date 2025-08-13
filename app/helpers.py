@@ -13,7 +13,8 @@ def get_current_user():
 def get_strava_api_headers():
     """Get headers for Strava API requests."""
     user = get_current_user()
-    return {'Authorization': f'Bearer {user.access_token}'} if user else None
+    if not user:
+        return None
 
     #Check if the access token is still valid
     if time.time() > user.expires_at:
@@ -35,7 +36,7 @@ def get_strava_api_headers():
         user.expires_at = new_token_info['expires_at']
         db.session.commit()
 
-    return {'Authorization': f'Bearer {user.access_token}'} if user else None
+    return {'Authorization': f'Bearer {user.access_token}'}
 
 # --- Polyline Decoder ---
 def decode_polyline(polyline_str):
