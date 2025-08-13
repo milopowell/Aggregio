@@ -23,7 +23,7 @@ class Config:
     db_url = os.getenv('DATABASE_URL')
     
     if db_url:
-        SQLALCHEMY_DATABASE_URI = db_url.replace("postgres://", "postgresql://", 1)
+        SQLALCHEMY_DATABASE_URI = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
     else:
         # Default to local PostgreSQL database for development
-        SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg://milo@localhost:5432/my_local_db'
+        SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://milo@localhost:5432/my_local_db'
