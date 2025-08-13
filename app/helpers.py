@@ -15,7 +15,27 @@ def get_strava_api_headers():
     user = get_current_user()
     return {'Authorization': f'Bearer {user.access_token}'} if user else None
 
-    # Check if the access token has expired ** Include later **
+    #Check if the access token is still valid
+    if time.time() > user.expires_at:
+        # If expired, refresh the token
+        token_data = {
+            'client_id': current_app.config['STRAVA_CLIENT_ID'],
+            'client_secret': current_app.config['STRAVA_CLIENT_SECRET'],
+            'refresh_token': user.refresh_token,
+            'grant_type': 'refresh_token'
+        }
+        response = requests.post(current_app.config['STRAVA_TOKEN_URL'], data=token_data)
+        if response.status_code != 200:
+            session.clear()
+            return None
+        
+        new_token_info = response.json()
+        user.access_token = new_token_info['access_token']
+        user.refresh_token = new_token_info['refresh_token']
+        user.expires_at = new_token_info['expires_at']
+        db.session.commit()
+
+    return {'Authorization': f'Bearer {user.access_token}'} if user else None
 
 # --- Polyline Decoder ---
 def decode_polyline(polyline_str):
