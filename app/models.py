@@ -8,7 +8,6 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100))
     access_token = db.Column(db.String(200), nullable=False)
-    aggregates = db.relationship('Aggregate', backref='user', lazy=True, cascade="all, delete-orphan")
     refresh_token = db.Column(db.String(200), nullable=False)
     expires_at = db.Column(db.Integer, nullable=False) 
     aggregates = db.relationship('Aggregate', backref='user', lazy=True, cascade="all, delete-orphan")
