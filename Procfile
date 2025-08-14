@@ -1,1 +1,1 @@
-web: flask db upgrade && gunicorn app:app
+web: bash -c "export FLASK_APP=run.py && flask db upgrade && gunicorn app:app"
