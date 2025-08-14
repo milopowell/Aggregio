@@ -4,5 +4,5 @@ requests
 python-dotenv
 gunicorn
 uuid
-psycopg2-binary
+psycopg2
 Flask-Migrate
