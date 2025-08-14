@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
 
-# Create extension instances without an app object
 db = SQLAlchemy()
 migrate = Migrate()
 
@@ -12,15 +11,15 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    # Initialize extensions
+    # Initialize extensions with the app
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Import and register blueprints
+    # local imports to avoid circular imports
+    from . import helpers
     from .main.routes import main_bp
     from .aggregates.routes import aggregates_bp
     from .activities.routes import activities_bp
-    from . import helpers
 
     @app.context_processor
     def inject_utility_functions():
@@ -47,6 +46,5 @@ def create_app(config_class=Config):
     def internal_error(error):
         db.session.rollback()
         return render_template('500.html'), 500
-    
 
     return app
