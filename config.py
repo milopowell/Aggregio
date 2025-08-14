@@ -20,5 +20,6 @@ class Config:
     SCOPE = "read,activity:read_all"
     
     # Database configuration
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL
     
