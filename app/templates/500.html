@@ -1,4 +1,3 @@
-// Future development for custom 500 error page
 {% extends 'layout.html' %}
 
 {% block title %}Page Not Found{% endblock %}
@@ -10,7 +9,7 @@
         <p class="hero-subtitle">
             The server encountered an internal error and was unable to process your request.</p>
     <a href="{{ url_for('main.index') }}" class="error-button">
-            <span>Back to Home</span>
+            <span>Click to Refresh</span>
             <img src="{{ url_for('static', filename='images/aggregio-logo2.svg') }}" alt="Strava Logo" class="aggregio-logo">
         </a>
 {% endblock %}

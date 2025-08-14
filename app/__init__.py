@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
+from . import helpers
 
 # Create extension instances without an app object
 db = SQLAlchemy()
