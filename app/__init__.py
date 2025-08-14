@@ -2,7 +2,6 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
-from . import helpers
 
 # Create extension instances without an app object
 db = SQLAlchemy()
@@ -17,6 +16,12 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
 
+    # Import and register blueprints
+    from .main.routes import main_bp
+    from .aggregates.routes import aggregates_bp
+    from .activities.routes import activities_bp
+    from . import helpers
+
     @app.context_processor
     def inject_utility_functions():
         return dict(
@@ -27,11 +32,6 @@ def create_app(config_class=Config):
             meters_to_miles=helpers.meters_to_miles,
             meters_to_feet=helpers.meters_to_feet
         )
-
-    # Import and register blueprints
-    from .main.routes import main_bp
-    from .aggregates.routes import aggregates_bp
-    from .activities.routes import activities_bp
 
     # Register blueprints
     app.register_blueprint(main_bp)
