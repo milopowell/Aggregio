@@ -11,11 +11,11 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    # Initialize extensions with the app
+    # Initialize extensions with the application instance
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # local imports to avoid circular imports
+
     from . import helpers
     from .main.routes import main_bp
     from .aggregates.routes import aggregates_bp
@@ -32,7 +32,7 @@ def create_app(config_class=Config):
             meters_to_feet=helpers.meters_to_feet
         )
 
-    # Register blueprints
+    # Register blueprints with the app
     app.register_blueprint(main_bp)
     app.register_blueprint(aggregates_bp, url_prefix='/aggregates')
     app.register_blueprint(activities_bp, url_prefix='/activities')
