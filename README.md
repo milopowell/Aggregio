@@ -6,7 +6,7 @@
 
 `Aggregio` allows you to aggregate multiple workouts on Strava to create one cohesive map
 
-The application can be used at [here](aggregio.onrender.com).
+The application can be used at [here](https://aggregio.onrender.com).
 
 # Contents
 
