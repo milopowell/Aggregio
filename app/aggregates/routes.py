@@ -1,4 +1,4 @@
-# All routes starting with '/aggregates'
+# All routes starting with '/aggregates' 
 import json
 import requests
 from flask import Blueprint, redirect, url_for, session, request, render_template, abort, jsonify, current_app
@@ -90,7 +90,13 @@ def finalize_aggregate():
                 if act_data.get('map', {}).get('summary_polyline'):
                     map_data_list.append({"polyline": act_data['map']['summary_polyline'], "type": act_type})
 
-        new_aggregate = Aggregate(user_id=user.id, name=aggregate_name, total_stats=json.dumps(total_stats), type_stats=json.dumps(type_stats), map_data=json.dumps(map_data_list))
+        new_aggregate = Aggregate(
+            user_id=user.id,
+            name=aggregate_name,
+            total_stats=json.dumps(total_stats),
+            type_stats=json.dumps(type_stats),
+            map_data=json.dumps(map_data_list)
+        )
         db.session.add(new_aggregate)
         db.session.commit()
         session.pop('selected_activities', None)
@@ -117,7 +123,7 @@ def view_single_aggregate(aggregate_id):
     elif len(activity_types) == 1 and activity_types[0] == 'Swim': 
         display_mode = 'yards'
     return render_template('aggregates/view_aggregate.html',
-        aggregate=aggregate, 
+        aggregate=aggregate,
         map_data=map_data,
         mapbox_token=current_app.config['MAPBOX_TOKEN'],
         meters_to_miles=meters_to_miles, 

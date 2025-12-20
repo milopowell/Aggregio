@@ -9,6 +9,8 @@ __pycache__/
 *.pyc
 
 # Local database file
-aggregio.db
-.DS_Store
-install.sh
+docker-compose.yml
+
+#local callback domain: aggregio.onrender.com
+
+
