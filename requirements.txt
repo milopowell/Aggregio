@@ -1,8 +1,10 @@
 Flask
 Flask-SQLAlchemy
+Flask-WTF
 requests
 python-dotenv
 gunicorn
 uuid
 psycopg2-binary
 Flask-Migrate
+

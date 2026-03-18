@@ -8,6 +8,7 @@
     <p class="page-subtitle">Update the name for your aggregate.</p>
 
     <form action="{{ url_for('aggregates.edit_aggregate', aggregate_id=aggregate.id) }}" method="POST" class="finalize-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
             <label for="aggregate_name">Aggregate Name</label>
             <input type="text" id="aggregate_name" name="aggregate_name" value="{{ aggregate.name }}" required autofocus>

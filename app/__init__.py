@@ -1,10 +1,12 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFProtect
 from config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
+csrf = CSRFProtect()
 
 def create_app(config_class=Config):
     """Create and configure the Flask application."""
@@ -14,6 +16,7 @@ def create_app(config_class=Config):
     # Initialize extensions with the application instance
     db.init_app(app)
     migrate.init_app(app, db)
+    csrf.init_app(app)
 
 
     from . import helpers

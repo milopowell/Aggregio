@@ -3,7 +3,7 @@ import json
 import requests
 from flask import Blueprint, redirect, url_for, session, request, render_template, abort, jsonify, current_app
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from .. import db
+from .. import db, csrf
 from ..models import Aggregate
 from ..helpers import (
     get_current_user, get_strava_api_headers, decode_polyline, 
@@ -46,6 +46,7 @@ def create_aggregate_start():
         meters_to_miles=meters_to_miles)
 
 @aggregates_bp.route('/update_selection', methods=['POST'])
+@csrf.exempt
 def update_selection():
     if not get_current_user():
         abort(401)

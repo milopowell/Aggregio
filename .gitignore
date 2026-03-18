@@ -12,5 +12,5 @@ __pycache__/
 docker-compose.yml
 
 #local callback domain: aggregio.onrender.com
-
+#local callback domain: 127.0.0.1:5001
 
