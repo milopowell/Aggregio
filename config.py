@@ -29,4 +29,10 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
 
-    
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+        "connect_args": {
+            "sslmode": "require" 
+        }
+    }
