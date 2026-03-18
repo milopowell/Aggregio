@@ -38,6 +38,7 @@ def get_strava_api_headers():
 
     return {'Authorization': f'Bearer {user.access_token}'}
 
+
 # --- Polyline Decoder ---
 def decode_polyline(polyline_str):
     if not polyline_str:
@@ -110,4 +111,48 @@ def get_pace_per_100y(moving_time_seconds, distance_meters):
     seconds = int(seconds_per_100y % 60)
 
     return f"{minutes:01d}:{seconds:02d}"
+
+# --- Logic Testing for Aggregates ---
+
+# Process a single activity's data into the running totals
+def accumulate_stats(total_stats, type_stats, map_data_list, act_data):
+    total_stats['distance'] += act_data.get('distance', 0)
+    total_stats['moving_time'] += act_data.get('moving_time', 0)
+    total_stats['total_elevation_gain'] += act_data.get('total_elevation_gain', 0)
+    total_stats['calories'] += act_data.get('calories', 0)
+
+    if act_data.get('has_heartrate'):
+        total_stats['average_heartrate_sum'] += act_data.get('average_heartrate', 0)
+        total_stats['heartrate_activity_count'] += 1
+
+    act_type = act_data.get('type', 'Unknown')
+    if act_type not in type_stats:
+        type_stats[act_type] = {'distance': 0, 'moving_time': 0, 'count': 0, 'calories': 0}
+    type_stats[act_type]['distance'] += act_data.get('distance', 0)
+    type_stats[act_type]['moving_time'] += act_data.get('moving_time', 0)
+    type_stats[act_type]['count'] += 1
+    type_stats[act_type]['calories'] += act_data.get('calories', 0)
+
+    if act_data.get('map', {}).get('summary_polyline'):
+        map_data_list.append({
+            "polyline": act_data['map']['summary_polyline'],
+            "type": act_type
+        })
+
+# Fetch a single activity from Strava. Returns (act_id, data) or (act_id, None)
+def fetch_activity(act_id, headers, api_url):
+    try:
+        response = requests.get(
+            f"{api_url}/activities/{act_id}",
+            headers=headers,
+            timeout=10
+        )
+        if response.status_code == 200:
+            return act_id, response.json()
+        elif response.status_code == 429:
+            return act_id, {'_error': 'rate_limited'}
+        else:
+            return act_id, None
+    except requests.RequestException:
+        return act_id, None
 

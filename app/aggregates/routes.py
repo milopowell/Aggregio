@@ -2,10 +2,14 @@
 import json
 import requests
 from flask import Blueprint, redirect, url_for, session, request, render_template, abort, jsonify, current_app
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from .. import db
 from ..models import Aggregate
-from ..helpers import get_current_user, get_strava_api_headers, decode_polyline, meters_to_miles, meters_to_feet, seconds_to_hms, mps_to_mph
-
+from ..helpers import (
+    get_current_user, get_strava_api_headers, decode_polyline, 
+    meters_to_miles, meters_to_feet, seconds_to_hms, mps_to_mph,
+    accumulate_stats, fetch_activity
+)
 aggregates_bp = Blueprint('aggregates', __name__, template_folder='templates')
 
 @aggregates_bp.route('/')
@@ -70,25 +74,39 @@ def finalize_aggregate():
         if not aggregate_name:
             return redirect(url_for('aggregates.finalize_aggregate'))
 
-        # Collect stats for the selected activities
-        total_stats, type_stats, map_data_list = {'distance': 0, 'moving_time': 0, 'total_elevation_gain': 0, 'calories': 0, 'max_speed': 0, 'average_heartrate_sum': 0, 'heartrate_activity_count':0}, {}, []
-        for act_id in activity_ids:
-            act_response = requests.get(f"{current_app.config['STRAVA_API_URL']}/activities/{act_id}", headers=headers)
-            if act_response.status_code == 200:
-                act_data = act_response.json()
-                total_stats['distance'] += act_data.get('distance', 0)
-                total_stats['moving_time'] += act_data.get('moving_time', 0)
-                total_stats['total_elevation_gain'] += act_data.get('total_elevation_gain', 0)
-                total_stats['calories'] += act_data.get('calories', 0)
-                act_type = act_data.get('type', 'Unknown')
-                if act_type not in type_stats:
-                    type_stats[act_type] = {'distance': 0, 'moving_time': 0, 'count': 0,'calories': 0}
-                type_stats[act_type]['distance'] += act_data.get('distance', 0)
-                type_stats[act_type]['moving_time'] += act_data.get('moving_time', 0)
-                type_stats[act_type]['count'] += 1
-                type_stats[act_type]['calories'] += act_data.get('calories', 0)
-                if act_data.get('map', {}).get('summary_polyline'):
-                    map_data_list.append({"polyline": act_data['map']['summary_polyline'], "type": act_type})
+        headers = get_strava_api_headers()
+        api_url = current_app.config['STRAVA_API_URL']
+
+        total_stats = {
+            'distance': 0, 'moving_time': 0, 'total_elevation_gain': 0,
+            'calories': 0, 'max_speed': 0, 'average_heartrate_sum': 0,
+            'heartrate_activity_count': 0
+        }
+        type_stats, map_data_list = {}, []
+        rate_limited = False
+
+        # Fetch all activities concurrently — max 5 workers to respect Strava rate limits
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = {
+                executor.submit(fetch_activity, act_id, headers, api_url): act_id
+                for act_id in activity_ids
+            }
+            for future in as_completed(futures):
+                act_id, act_data = future.result()
+                if act_data is None:
+                    continue
+                if act_data.get('_error') == 'rate_limited':
+                    rate_limited = True
+                    continue
+                accumulate_stats(total_stats, type_stats, map_data_list, act_data)
+
+        if rate_limited:
+            # Surface this to the user rather than silently dropping activities
+            return render_template(
+                'aggregates/finalize_aggregate.html',
+                count=len(activity_ids),
+                error="Strava rate limit reached. Please wait a moment and try again."
+            )
 
         new_aggregate = Aggregate(
             user_id=user.id,
