@@ -66,6 +66,23 @@ def sample_user(db_session):
         db_session.delete(user)
         db_session.commit()
 
+@pytest.fixture
+def other_user(db_session):
+    from app.models import User
+    user = User(
+        id=99999,
+        username='otheruser',
+        access_token='other_access_token',
+        refresh_token='other_refresh_token',
+        expires_at=9999999999
+    )
+    db_session.add(user)
+    db_session.commit()
+    yield user
+    if db_session.get(User, 99999):
+        db_session.delete(user)
+        db_session.commit()
+
 
 # Logged-in client fixture
 # A fake browser that already has a user_id in the session
