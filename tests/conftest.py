@@ -62,8 +62,9 @@ def sample_user(db_session):
     db_session.add(user)
     db_session.commit()
     yield user
-    db_session.delete(user)
-    db_session.commit()
+    if db_session.get(User, 12345):
+        db_session.delete(user)
+        db_session.commit()
 
 
 # Logged-in client fixture

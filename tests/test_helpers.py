@@ -49,7 +49,7 @@ def test_seconds_to_hms_one_hour():
 def test_get_pace_normal():
     # 1 mile in 8 minutes = 1609m in 480 seconds
     result = get_pace(480, 1609)
-    assert result == '8:00'  # approximately
+    assert result == '8:00'  
 
 def test_get_pace_zero_distance():
     assert get_pace(480, 0) == 'N/A'
